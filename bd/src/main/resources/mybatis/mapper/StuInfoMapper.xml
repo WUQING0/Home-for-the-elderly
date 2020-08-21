@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace命名空间，作用就是对sql进行分类化管理，理解sql隔离
+注意：使用mapper代理方法开发，namespace有特殊重要的作用，namespace等于mapper接口地址
+-->
+<mapper namespace="bigdemo.bd.mapper.StuInfoMapper">
+    <insert id="add" parameterType="bigdemo.bd.model.StuInfo" >
+                insert into stu_info (stu_id,stu_picture,stu_name,stu_sex,stu_class,price_state,stu_phone,stu_age,order_amount,actual_amount) values (#{stuId},#{stuPicture},
+                #{stuName},#{stuSex},#{stuClass},#{priceState},#{stuPhone},#{stuAge},#{orderAmount},#{actualAmount})
+        </insert>
+    <delete id="delete" parameterType="Integer">
+                delete from stu_info where stu_id=#{stuId}
+        </delete>
+
+    <update id="update" parameterType="bigdemo.bd.model.StuInfo">
+                update stu_info set stu_picture=#{stuPicture},stu_name=#{stuName},stu_sex=#{stuSex},stu_class=#{stuClass},price_state=#{priceState},stu_phone=#{stuPhone},stu_age=#{stuAge},order_amount=#{orderAmount},actual_amount=#{actualAmount} where stu_id=#{stuId}
+        </update>
+
+
+    <select id="select"    resultType="bigdemo.bd.model.StuInfo"  parameterType="bigdemo.bd.model.StuInfo">
+                select * from stu_info order by stu_id desc
+        </select>
+
+    <select id="selectKey" parameterType="bigdemo.bd.model.StuInfo" resultType="bigdemo.bd.model.StuInfo">
+                select * from stu_info where stu_id=#{stuId} order by stu_id desc
+        </select>
+
+</mapper>

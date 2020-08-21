@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace命名空间，作用就是对sql进行分类化管理，理解sql隔离
+注意：使用mapper代理方法开发，namespace有特殊重要的作用，namespace等于mapper接口地址
+-->
+<mapper namespace="bigdemo.bd.mapper.CourseAdminMapper">
+        <insert id="add" parameterType="bigdemo.bd.model.CourseAdmin" >
+                insert into course_admin (course_id,course_name,course_tch,course_place) values (#{courseId},#{courseName},
+                #{courseTch},#{coursePlace})
+        </insert>
+        <delete id="delete" parameterType="Integer">
+                delete from course_admin where course_id=#{courseId}
+        </delete>
+
+        <update id="update" parameterType="bigdemo.bd.model.CourseAdmin">
+                update course_admin set course_name=#{courseName},course_tch=#{courseTch},course_place=#{coursePlace} where course_id=#{courseId}
+        </update>
+
+
+        <select id="select"    resultType="bigdemo.bd.model.CourseAdmin"  parameterType="bigdemo.bd.model.CourseAdmin">
+                select * from course_admin order by course_id desc
+        </select>
+
+        <select id="selectKey" parameterType="bigdemo.bd.model.CourseAdmin" resultType="bigdemo.bd.model.CourseAdmin">
+                select * from course_admin  order by course_id desc
+        </select>
+
+</mapper>

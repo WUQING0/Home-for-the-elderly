@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace命名空间，作用就是对sql进行分类化管理，理解sql隔离
+注意：使用mapper代理方法开发，namespace有特殊重要的作用，namespace等于mapper接口地址
+-->
+<mapper namespace="bigdemo.bd.mapper.ClassAdminMapper">
+    <insert id="add" parameterType="bigdemo.bd.model.ClassAdmin" >
+                insert into class_admin (class_id,class_name,vacancie_num,state,class_leader,pay_price) values (#{classId},#{className},#{vacancieNum},#{state},#{classLeader},#{payPrice})
+        </insert>
+    <delete id="delete" parameterType="Integer">
+                delete from class_admin where class_id=#{classId}
+        </delete>
+
+    <update id="update" parameterType="bigdemo.bd.model.ClassAdmin">
+                update class_admin set class_name=#{className},vacancie_num=#{vacancieNum},state=#{state},class_leader=#{classLeader},pay_price=#{payPrice} where class_id=#{classId}
+        </update>
+
+
+    <select id="select"    resultType="bigdemo.bd.model.ClassAdmin"  parameterType="bigdemo.bd.model.ClassAdmin">
+                select * from class_admin order by class_id desc
+        </select>
+
+    <select id="selectKey" parameterType="bigdemo.bd.model.ClassAdmin" >
+                select * from class_admin where class_id=#{classId} order by class_id desc
+        </select>
+
+    <select id="selectClass"  resultType="bigdemo.bd.model.ClassAdmin">
+        select class_id from class_admin
+    </select>
+
+    <update id="updates" parameterType="bigdemo.bd.model.ClassAdmin">
+        update class_admin set vacancie_num=vacancie_num-1 where class_id=#{classId}
+    </update>
+
+    <update id="updatess" parameterType="bigdemo.bd.model.ClassAdmin">
+        update class_admin set vacancie_num=vacancie_num+1 where class_id=#{classId}
+    </update>
+
+    <select id="selectkey_price" resultType="bigdemo.bd.model.ClassAdmin">
+        select pay_price from class_admin where class_id=#{classId}
+    </select>
+    <select id="selectClass_panduan"  parameterType="java.lang.Integer" resultType="java.lang.Integer">
+        select vacancie_num from class_admin where class_id=#{classId}
+    </select>
+</mapper>

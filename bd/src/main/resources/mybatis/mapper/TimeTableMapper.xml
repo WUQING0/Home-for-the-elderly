@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace命名空间，作用就是对sql进行分类化管理，理解sql隔离
+注意：使用mapper代理方法开发，namespace有特殊重要的作用，namespace等于mapper接口地址
+-->
+<mapper namespace="bigdemo.bd.mapper.TimeTableMapper">
+    <insert id="add" parameterType="bigdemo.bd.model.TimeTable" >
+                insert into timetable (class_id,one,two,three,four,five) values (#{classId},#{one},
+                #{two},#{three},#{four},#{five})
+        </insert>
+    <delete id="delete" parameterType="Integer">
+                delete from timetable where class_id=#{classId}
+        </delete>
+
+    <update id="update" parameterType="bigdemo.bd.model.TimeTable">
+                update timetable set one=#{one},two=#{two},three=#{three},four=#{four},five=#{five} where class_id=#{classId}
+        </update>
+
+
+    <select id="selectKey" parameterType="java.lang.Integer" resultType="bigdemo.bd.model.TimeTable">
+                select * from timetable where class_id=#{classId} order by class_id desc
+        </select>
+    <select id="select"  resultType="bigdemo.bd.model.TimeTable">
+                select * from timetable  order by class_id desc
+        </select>
+</mapper>

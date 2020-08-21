@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace命名空间，作用就是对sql进行分类化管理，理解sql隔离
+注意：使用mapper代理方法开发，namespace有特殊重要的作用，namespace等于mapper接口地址
+-->
+<mapper namespace="bigdemo.bd.mapper.DiscountActivityMapper">
+    <insert id="add" parameterType="bigdemo.bd.model.DiscountActivity" >
+                insert into discount_activity (act_id,act_name,act_num,surplus_num,start_time,end_time,price,state,class_id) values (#{actId},#{actName},
+                #{actNum},#{surplusNum},#{startTime},#{endTime},#{price},#{state},#{classId})
+        </insert>
+    <delete id="delete" parameterType="Integer">
+                delete from discount_activity where act_id=#{actId}
+        </delete>
+
+    <update id="update" parameterType="bigdemo.bd.model.DiscountActivity">
+                update discount_activity set act_name=#{actName},act_num=#{actNum},surplus_num=#{surplusNum},start_time=#{startTime},end_time=#{endTime},price=#{price},state=#{state},class_id=#{classId} where act_id=#{actId}
+        </update>
+
+
+    <select id="select"    resultType="bigdemo.bd.model.DiscountActivity"  parameterType="bigdemo.bd.model.DiscountActivity">
+                select * from discount_activity order by act_id desc
+        </select>
+
+    <select id="selectKey" parameterType="bigdemo.bd.model.DiscountActivity" >
+                select * from discount_activity where act_id=#{actId} order by act_id desc
+        </select>
+
+    <update id="updateact" parameterType="bigdemo.bd.model.DiscountActivity">
+                update discount_activity set surplus_num=surplus_num-1 where act_id=#{actId}
+        </update>
+    <select id="select_start_time" resultType="java.util.Date"  parameterType="java.lang.Integer">
+        select start_time from discount_activity where act_id=#{actId} order by act_id desc
+    </select>
+    <select id="select_end_time" resultType="java.util.Date"  parameterType="java.lang.Integer">
+        select end_time from discount_activity where act_id=#{actId} order by act_id desc
+    </select>
+    <select id="select_class_id" resultType="java.lang.Integer"  parameterType="java.lang.Integer">
+        select class_id from discount_activity where act_id=#{actId} order by act_id desc
+    </select>
+    <update id="updateact_num" parameterType="java.lang.Integer">
+                update discount_activity set surplus_num=surplus_num-1 where class_id=#{classId}
+        </update>
+
+    <select id="selectAct_panduan"  parameterType="java.lang.Integer" resultType="java.lang.Integer">
+        select surplus_num from discount_activity where class_id=#{classId}
+    </select>
+</mapper>

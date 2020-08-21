@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html class="x-admin-sm">
+
+<head>
+    <meta charset="UTF-8">
+    <title>欢迎页面-X-admin2.2</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+    <link rel="stylesheet" href="./css/font.css">
+    <link rel="stylesheet" href="./css/xadmin.css">
+    <script src="./lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="./js/xadmin.js"></script>
+</head>
+
+<body>
+<div class="x-nav">
+            <span class="layui-breadcrumb">
+                <a href="">首页</a>
+                <a href="">演示</a>
+                <a>
+                    <cite>导航元素</cite></a>
+            </span>
+    <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" onclick="location.reload()" title="刷新">
+        <i class="layui-icon layui-icon-refresh" style="line-height:30px"></i>
+    </a>
+</div>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-body ">
+
+                    <!--                            这里用es搜索-->
+                    <form class="layui-form layui-col-space5" style="display: flex; justify-content: left" action="">
+
+                        <div class="layui-input-inline layui-show-xs-block"  style="width: 35%">
+                            <input type="text" name="username" placeholder="请输入订单号" autocomplete="off" class="layui-input"></div>
+                        <div class="layui-input-inline layui-show-xs-block">
+                            <button class="layui-btn" lay-submit="" lay-filter="sreach" type="submit">
+                                <i class="layui-icon">&#xe615;</i></button>
+                        </div>
+
+
+                    </form>
+                </div>
+
+
+
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+<style>
+    .layui-table-cell{
+        text-align: center;
+        height: auto;
+        white-space: normal;
+    }
+</style>
+<table id="dates" class="layui-hide" lay-filter="useruv"></table>
+<script type="text/html" id="barDemo">
+
+    <a class="layui-btn layui-btn-danger layui-btn-mini " lay-event="detail">已完成支付</a>
+    <a class="layui-btn layui-btn-danger layui-btn-mini " lay-event="del">支付</a>
+</script>
+<script type="text/javascript">
+    layui.use('table', function(){
+        var table = layui.table;
+        table.render({
+            elem: '#dates'
+            ,url:'http://localhost:8080/Stu_signup_no/order/'
+            ,cols: [[
+                {field:'orderId', width:100, title: '订单编号', sort: true} //sort：true页面可进行排序操作
+                ,{field:'stuId',  title: '学生学号'}
+                ,{field:'stuPicture',width:170,  title: '学生头像',templet:'<div><img src="{{d.stuPicture}}"/></div>', sort: true}
+                ,{field:'stuName',width:170,  title: '学生姓名'}
+                ,{field:'classId',width:170,  title: '所属班级'}
+                ,{field:'stuSex',width:170,  title: '学生性别'}
+                ,{field:'stuAge',width:170,  title: '学生年龄'}
+                ,{field:'stuPhone',width:170,  title: '学生联系电话'}
+                ,{field:'orderPrice',width:170,  title: '订单金额'}
+                ,{field:'actualPrice',width:170,  title: '实际缴付金额'}
+                ,{field:'right', title: '操作', width:177,toolbar:"#barDemo"}
+            ]]
+            ,page: true
+        });
+        table.on('tool(useruv)', function(obj){
+            var data = obj.data;
+            if(obj.event === 'detail'){
+                layer.confirm('小的，正在确认您的订单', function(index){
+                    $.ajax({
+                        url: "http://localhost:8080/Stu_signup_no/order_pay_confirm/",
+                        type: "POST",
+                        data:{"orderId":data.orderId,"stuId":data.stuId,"stuPicture":data.stuPicture,"stuName":data.stuName,"classId":data.classId,"stuSex":data.stuSex,"stuAge":data.stuAge,"stuPhone":data.stuPhone,"orderPrice":data.orderPrice,"actualPrice":data.actualPrice},
+                        dataType: "json",
+                        success: function(data){
+                            if(data.code==1){
+                                alert("无法为您办理入班信息，缴费订单信息有误或班级活动报名人数已满");
+                            }else if(data.code==0) {
+                                alert("已成功添加至对应班级，请查收")
+                            }
+                            //删除这一行
+                            obj.del();
+                            //关闭弹框
+                            layer.close(index);
+                            layer.msg("正在确认订单信息", {icon: 6});
+                            self.location.reload();
+                        }
+
+                    });
+                });
+            } else if(obj.event === 'del'){
+                layer.confirm('确定进行支付吗？', function(index){
+
+                    // $.ajax({
+                    //     url: "http://localhost:8080/Stu_signup_no/order_pay/",
+                    //     type: "POST",
+                    //     data:{"id":data.orderId,"orderPrice":data.orderPrice,"actualPrice":data.actualPrice},
+                    //     dataType: "json",
+                    //     success: function(data){
+                    //         //删除这一行
+                    //         obj.del();
+                    //         //关闭弹框
+                    //         layer.close(index);
+                    //         layer.msg("正在跳转支付页面", {icon: 6});
+                    //         self.location.reload();
+                    //         window.location.href="http://localhost:8080/student/Payindex.html/"
+                    //     }
+                    //
+                    // });
+
+                    document.cookie="orderId="+data.orderId;
+                    document.cookie="orderPrice="+data.orderPrice;
+                    window.location.href="http://localhost:8080/student/Payindex.html/"
+                });
+            } else if(obj.event === 'edit'){
+
+                layer.prompt({
+                    formType: 2
+                    ,title: '修改 ID 为 ['+ data.id +'] 的访问量'
+                    ,value: data.uv
+                }, function(value, index){
+                    //这里一般是发送修改的Ajax请求
+                    EidtUv(data,value,index,obj);
+
+                });
+
+            }
+        });
+        var $ = layui.$, active = {
+            reload: function(){
+                var demoReload = $('#demoReload');
+
+                table.reload('testReload', {
+                    where: {
+                        keyword: demoReload.val()
+                    }
+                });
+            }
+        };
+
+
+    });
+    function setCookie(name,value)
+    {
+        var Days = 30;
+        var exp = new Date();
+        exp.setTime(exp.getTime() + Days*24*60*60*1000);
+        document.cookie = name + "="+ escape (value) + ";expires=" + exp.toGMTString();
+
+
+        var strsec = getsec(time);
+        var exp = new Date();
+        exp.setTime(exp.getTime() + strsec*1);
+        document.cookie = name + "="+ escape (value) + ";expires=" + exp.toGMTString();
+    }
+</script>
+</html>
