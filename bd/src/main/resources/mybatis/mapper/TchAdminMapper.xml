@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace命名空间，作用就是对sql进行分类化管理，理解sql隔离
+注意：使用mapper代理方法开发，namespace有特殊重要的作用，namespace等于mapper接口地址
+-->
+<mapper namespace="bigdemo.bd.mapper.TchAdminMappr">
+    <insert id="add" parameterType="bigdemo.bd.model.Stu_signup_no" >
+                insert into tch_admin (tch_id,tch_name,tch_subject,leader_class,tch_phone) values (#{tchId},#{tchName},#{tchSubject},#{leaderClass},#{tchPhone})
+        </insert>
+    <select id="select"    resultType="bigdemo.bd.model.TchAdmin"  parameterType="bigdemo.bd.model.TchAdmin">
+                select * from tch_admin order by tch_id desc
+        </select>
+
+
+    <update id="update" parameterType="bigdemo.bd.model.TchAdmin">
+        update tch_admin set tch_name=#{tchName},tch_subject=#{tchSubject},leader_class=#{leaderClass},tch_phone=#{tchPhone} where tch_id=#{tchId}
+    </update>
+
+
+    <delete id="delete" parameterType="Integer">
+                delete from tch_admin where tch_id=#{tchId}
+        </delete>
+</mapper>
