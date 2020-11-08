@@ -40,6 +40,7 @@
                 <div class="layui-input-inline">
                     <input type="text" id="stuName" name="stuName" required="" lay-verify="required" autocomplete="off" class="layui-input"></div>
             </div>
+
             <div class="layui-form-item">
                 <label for="stuSex" class="layui-form-label">
                     <span class="x-red">*</span>学生性别</label>
@@ -126,8 +127,13 @@
                         data:{"id":data.field.actId,"stuPicture":data.field.stuPicture,"stuSex":data.field.stuSex,"stuName":data.field.stuName,"stuAge":data.field.stuAge,"stuPhone":data.field.stuPhone,"orderPrice":data.field.orderPrice},
                         dataType: "json",
                         type:'post',
-                    });
-
+                        success: function(data){
+                            if(data.code==1){
+                                alert("无法为您办理入班信息，订单信息有误或班级活动报名人数已满");
+                            }else if(data.code==0) {
+                                alert("已报名成功，请核对订单进行缴费")
+                            }
+                    }});
                     //发异步，把数据提交给php
                     layer.alert("增加成功", {
                             icon: 6

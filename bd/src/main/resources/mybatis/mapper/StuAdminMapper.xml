@@ -17,4 +17,10 @@
     <select id="update"    resultType="bigdemo.bd.model.StuAdmin"  parameterType="bigdemo.bd.model.StuAdmin">
                 update stu_admin set stus_id=#{stusId} where stu_id=#{stuId}
         </select>
+    <delete id="delete" parameterType="Integer">
+                delete from stu_admin where stu_id=#{stuId}
+        </delete>
+    <select id="select1"    resultType="bigdemo.bd.model.StuAdmin" >
+                select * from stu_admin
+        </select>
 </mapper>

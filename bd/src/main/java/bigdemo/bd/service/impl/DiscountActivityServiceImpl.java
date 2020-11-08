@@ -88,6 +88,12 @@ public class DiscountActivityServiceImpl implements DiscountActivityService {
         return discountActivityMapper.selectAct_panduan(id);
     }
 
+    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ)
+    @Override
+    public Integer selectAct_panduan_class(Integer id) {
+        return discountActivityMapper.selectAct_panduan_class(id);
+    }
+
     public  boolean belongCalendar(Date nowTime, Date beginTime, Date endTime) {
         //设置当前时间
         Calendar date = Calendar.getInstance();

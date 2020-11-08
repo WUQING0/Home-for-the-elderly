@@ -109,7 +109,7 @@ public class StuInfoController {
                 c.setClassId(stuInfo.getStuClass());
                 classAdminService.updateClasss(c);
             } else {
-                System.out.println("照片无法识别人脸");
+                System.out.println("照片无法识别人脸111111111111");
             }
         }
         return "";
@@ -140,7 +140,7 @@ public class StuInfoController {
             stuInfo.setStuPicture(save_path);  //一定存储的为save_path 自定义的保存路径
             stuInfoService.updateStu(stuInfo);
         } else {
-            System.out.println("照片无法识别人脸");
+            System.out.println("照片无法识别人脸2222222");
         }
         return "";
     }
@@ -151,6 +151,7 @@ public class StuInfoController {
                                          int limit, String id, HttpSession session) {
         PageHelper.startPage(page, limit);
         id= String.valueOf(session.getAttribute("sid"));
+        System.out.println(session.getAttribute("sid")+"哇哇哇哇哇哇哇哇哇哇哇哇哇哇");
         Integer ids=stuAdminMapper.selectkey(id);
         List<StuInfo> users = stuInfoService.selectKeyStu(ids);// 这是我们的sql
         // 使用pageInfo包装查询

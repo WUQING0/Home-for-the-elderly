@@ -20,4 +20,5 @@ public interface DiscountActivityMapper {
     public Integer select_class_id(Integer id);
 
     public Integer selectAct_panduan(Integer id);
+    public Integer selectAct_panduan_class(Integer id);
 }

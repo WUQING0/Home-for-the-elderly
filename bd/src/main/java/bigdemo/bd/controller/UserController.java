@@ -58,11 +58,17 @@ public class UserController {
             return "redirect:http://localhost:8080/toLogin";
         }
         if(StringUtils.isBlank(errorMsg)){
-            return "redirect:http://localhost:8080/student/index.html";     //认证成功后跳转
+            if(username.equals("110")) {        //判断账户为什么类型的账户
+
+                return "redirect:http://localhost:8080/index.html";     //认证成功后跳转
+            }else if(username.equals("123")){
+                return "redirect:http://localhost:8080/student/index.html";
+            }
         }else{
             modelMap.addAttribute("errorMsg",errorMsg);
             return "/login";
         }
+        return null;
     }
     @RequestMapping(value = "/logout")
     public String logout(){

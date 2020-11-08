@@ -108,9 +108,9 @@ public class SnowFlake {
 //
 //    }
 
-//    public static void main(String[] args) {
-//        String salt="a82ce4cd34af41ca99899e340a3df3d3";     //加密
-//        String password="123";
-//        System.out.println(new Md5Hash(password,salt));
-//    }
+    public static void main(String[] args) {
+        String salt="a82ce4cd34af41ca99899e340a3df3d3";     //加密
+        String password="123";
+        System.out.println(new Md5Hash(password,salt));
+    }
 }

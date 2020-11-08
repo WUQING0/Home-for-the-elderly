@@ -126,7 +126,14 @@
                         url: "http://localhost:8080/Stu_signup_no/insertStu/",
                         data:{"stuPicture":data.field.stuPicture,"stuSex":data.field.stuSex,"stuName":data.field.stuName,"classId":data.field.classId,"stuAge":data.field.stuAge,"stuPhone":data.field.stuPhone,"orderPrice":data.field.orderPrice},
                         dataType: "json",
-                        type:'post'
+                        type:'post',
+                        success: function(data){
+                            if(data.code==1){
+                                alert("无法为您办理入班信息，缴费订单信息有误或班级活动报名人数已满");
+                            }else if(data.code==0) {
+                                alert("已报名成功，请核对订单进行缴费")
+                            }
+                        }
                     });
 
                     //发异步，把数据提交给php

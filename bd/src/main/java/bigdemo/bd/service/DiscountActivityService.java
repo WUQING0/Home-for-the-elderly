@@ -17,4 +17,6 @@ public interface DiscountActivityService {
     public Date select_end_time(Integer id);
     public Integer select_class_id(Integer id);
     public Integer selectAct_panduan(Integer id);
+
+    public Integer selectAct_panduan_class(Integer id);
 }

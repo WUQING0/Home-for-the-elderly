@@ -29,33 +29,28 @@
 </body>
 
 
-<button class="layui-btn layui-btn-radius" onclick="xadmin.open('报名','./class_time.html',800,600)">
-    <i class="layui-icon"></i>报名</button></div>
-<!--<button class="layui-btn  layui-btn-radius"  onclick="xadmin.open('编辑班级','./class_edit.html',800,600)">-->
-<!--    <i class="layui-icon"></i>编辑</button></div>-->
+<button class="layui-btn layui-btn-radius" onclick="xadmin.open('添加设备缴费数据','./tool_add.html',800,600)">
+    <i class="layui-icon"></i>添加</button></div>
+<button class="layui-btn  layui-btn-radius"  onclick="xadmin.open('编辑设备缴费数据','./tool_edit.html',800,600)">
+    <i class="layui-icon"></i>编辑</button></div>
 
 <table id="dates" class="layui-hide" lay-filter="useruv"></table>
 <script type="text/html" id="barDemo">
 
-    <a class="layui-btn layui-btn-danger layui-btn-mini " lay-event="del">报名</a>
+    <a class="layui-btn layui-btn-danger layui-btn-mini " lay-event="del">删除</a>
 </script>
 <script type="text/javascript">
     layui.use('table', function(){
         var table = layui.table;
         table.render({
             elem: '#dates'
-            ,url:'http://localhost:8080/Act/selectAct/'
+            ,url:'http://localhost:8080/Ming/select/'
+            ,page:10
             ,cols: [[
-                {field:'actId', width:100, title: '活动编号', sort: true} //sort：true页面可进行排序操作
-                ,{field:'actName',  title: '活动内容'}
-                ,{field:'actNum',width:170,  title: '计划招收人数', sort: true}
-                ,{field:'surplusNum',width:170,  title: '剩余名额'}
-                ,{field:'startTime',width:170,  title: '开始时间',templet:"<div>{{layui.util.toDateString(d.startTime,'yyyy-MM-dd')}}</div>"}
-                ,{field:'endTime',width:170,  title: '结束时间',templet:"<div>{{layui.util.toDateString(d.endTime,'yyyy-MM-dd')}}</div>"}
-                ,{field:'price',width:170,  title: '价格'}
-                ,{field:'state',width:170,  title: '状态'}
-                ,{field:'classId',width:170,  title: '限时活动班级'}
-                // ,{field:'right', title: '报名', width:177,toolbar:"#barDemo"}
+                {field:'priceId', width:100, title: '设备缴费编号', sort: true} //sort：true页面可进行排序操作
+                ,{field:'priceThing',  title: '设备缴费名称'}
+                ,{field:'payPrice',width:170,  title: '缴付价格', sort: true}
+                ,{field:'right', title: '操作', width:177,toolbar:"#barDemo"}
             ]]
             ,page: true
         });
@@ -65,11 +60,10 @@
                 layer.msg('ID：'+ data.id + ' 的查看操作');
             } else if(obj.event === 'del'){
                 layer.confirm('真的删除行么', function(index){
-                    console.log(data.courseId);
                     $.ajax({
-                        url: "http://localhost:8080/Class/deleteClass/",
+                        url: "http://localhost:8080/Ming/delete/",
                         type: "POST",
-                        data:{"id":data.classId},
+                        data:{"id":data.priceId},
                         dataType: "json",
                         success: function(data){
                             //删除这一行

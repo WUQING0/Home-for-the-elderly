@@ -47,4 +47,7 @@
     <select id="selectAct_panduan"  parameterType="java.lang.Integer" resultType="java.lang.Integer">
         select surplus_num from discount_activity where class_id=#{classId}
     </select>
+    <select id="selectAct_panduan_class"  parameterType="java.lang.Integer" resultType="java.lang.Integer">
+        select class_id from discount_activity where act_id=#{actId}
+    </select>
 </mapper>

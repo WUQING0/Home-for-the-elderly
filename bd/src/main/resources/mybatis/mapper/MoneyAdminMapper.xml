@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace命名空间，作用就是对sql进行分类化管理，理解sql隔离
+注意：使用mapper代理方法开发，namespace有特殊重要的作用，namespace等于mapper接口地址
+-->
+<mapper namespace="bigdemo.bd.mapper.MoneyAdminMapper">
+    <insert id="add" parameterType="bigdemo.bd.model.MoneyAdmin" >
+                insert into money_admin (act_id,act_name,act_price,act_pay) values (#{actId},#{actName},
+                #{actPrice},#{actPay})
+        </insert>
+    <delete id="delete" parameterType="Integer">
+                delete from money_admin where act_id=#{actId}
+        </delete>
+
+
+    <select id="select"    resultType="bigdemo.bd.model.MoneyAdmin"  parameterType="bigdemo.bd.model.MoneyAdmin">
+                select * from money_admin order by act_id desc
+        </select>
+
+
+</mapper>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace命名空间，作用就是对sql进行分类化管理，理解sql隔离
+注意：使用mapper代理方法开发，namespace有特殊重要的作用，namespace等于mapper接口地址
+-->
+<mapper namespace="bigdemo.bd.mapper.MingXiMapper">
+    <insert id="add" parameterType="bigdemo.bd.model.MingXi" >
+                insert into capital_details (price_id,price_thing,pay_price) values (#{priceId},#{priceThing},#{payPrice})
+        </insert>
+    <delete id="delete" parameterType="Integer">
+                delete from capital_details where price_id=#{priceId}
+        </delete>
+
+    <update id="update" parameterType="bigdemo.bd.model.MingXi">
+                update capital_details set price_thing=#{priceThing},pay_price=#{payPrice} where price_id=#{priceId}
+        </update>
+
+
+    <select id="select"    resultType="bigdemo.bd.model.MingXi"  parameterType="bigdemo.bd.model.MingXi">
+                select * from capital_details order by price_id desc
+        </select>
+
+</mapper>

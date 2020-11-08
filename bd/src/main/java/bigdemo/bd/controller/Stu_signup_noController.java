@@ -1,15 +1,9 @@
 package bigdemo.bd.controller;
 
 import bigdemo.bd.mapper.StuAdminMapper;
-import bigdemo.bd.model.ClassAdmin;
-import bigdemo.bd.model.StuAdmin;
-import bigdemo.bd.model.StuInfo;
-import bigdemo.bd.model.Stu_signup_no;
+import bigdemo.bd.model.*;
 
-import bigdemo.bd.service.impl.ClassAdminServiceImpl;
-import bigdemo.bd.service.impl.DiscountActivityServiceImpl;
-import bigdemo.bd.service.impl.StuInfoServiceImpl;
-import bigdemo.bd.service.impl.Stu_signup_noServiceImpl;
+import bigdemo.bd.service.impl.*;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.redisson.api.RLock;
@@ -54,22 +48,50 @@ public class Stu_signup_noController {
     @Autowired
     StuAdminMapper stuAdminMapper;
 
+    @Autowired
+    MoneyAdminServiceImpl moneyAdminService;
+
+
     @RequestMapping(value = "/insertStu")
     @ResponseBody
-    public String insert(Stu_signup_no stu_signup_no) throws IOException {
+    public Map<String, Object> insert(Stu_signup_no stu_signup_no) throws Exception {
+        Map<String, Object> map = new HashMap<String, Object>();
 
-        stu_signup_noService.addStu(stu_signup_no);
-        return "";
+        final String key = new StringBuffer().append(stu_signup_no.getOrderId()).append(stu_signup_no.getStuId()).toString();
+        RLock lock = redis.getLock(key);
+        try {
+            Boolean cacheRes = lock.tryLock(30, 10, TimeUnit.SECONDS);
+
+            System.out.println(stu_signup_no.getClassId());
+            if (cacheRes) {
+                if (classAdminService.selectClass_panduan(1) >0) {
+                    stu_signup_noService.addStu(stu_signup_no);
+                    ClassAdmin c = new ClassAdmin();
+                    c.setClassId(stu_signup_no.getClassId());
+                    classAdminService.updateClasss(c);
+                    map.put("code", 0);
+
+                } else {
+                    map.put("code", 1);
+                }
+            } else {
+                map.put("code", 1);
+            }
+
+    } finally {
+        lock.unlock();
+    }
+        return map;
     }
 
     @RequestMapping(value = "/insertStu_time")
     @ResponseBody
-    public String insert_time(Stu_signup_no stu_signup_no, Integer id) throws IOException, ParseException {
+    public Map<String, Object> insert_time(Stu_signup_no stu_signup_no, Integer id) throws Exception, ParseException {
 
         Map<String, Object> map = new HashMap<>();
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         Date nowTime = null;
-        Date beginTime=null;
+        Date beginTime = null;
         Date endsTime = null;
 
         nowTime = df.parse(df.format(new Date()));
@@ -80,16 +102,29 @@ public class Stu_signup_noController {
         endsTime = df.parse(df.format(discountActivityService.select_end_time(id)));
 
 
-        boolean flag = discountActivityService.belongCalendar(nowTime,beginTime,endsTime);
+        boolean flag = discountActivityService.belongCalendar(nowTime, beginTime, endsTime);
 
-        if(flag==true){
-            stu_signup_no.setClassId(discountActivityService.select_class_id(id));
-            stu_signup_noService.addStu(stu_signup_no);
-            map.put("code",0);
+        if (flag == true) {
+            final String key = new StringBuffer().append(stu_signup_no.getStuId()).toString();
+            RLock lock = redis.getLock(key);
+            try {
+                Boolean cacheRes = lock.tryLock(30, 10, TimeUnit.SECONDS);
+                if (cacheRes) {
+                    if (discountActivityService.selectAct_panduan(discountActivityService.selectAct_panduan_class(id)) > 0) {
+                        stu_signup_no.setClassId(discountActivityService.select_class_id(id));
+                        stu_signup_noService.addStu(stu_signup_no);
+                        discountActivityService.updateact_num(stu_signup_no.getClassId());
+                        map.put("code", 0);
+
+                    }
+                }
+            } finally {
+                lock.unlock();
+            }
+        } else {
+            map.put("code", 1);
         }
-        map.put("code",1);
-
-        return "";
+        return map;
     }
 
     @RequestMapping(value = "/order")
@@ -108,10 +143,11 @@ public class Stu_signup_noController {
         return map;
 
     }
+
     @RequestMapping(value = "/order_pay")
     @ResponseBody
     public Map<String, Object> select(Integer page,
-                                      Integer limit, Integer id){
+                                      Integer limit, Integer id) {
         PageHelper.startPage(1, 1);
         System.out.println(limit);
         List<Stu_signup_no> users = stu_signup_noService.selectkey(id);// 这是我们的sql
@@ -134,12 +170,6 @@ public class Stu_signup_noController {
     public Map<String, Object> select_confirm(Stu_signup_no stu_signup_no, HttpServletResponse response, HttpSession session) throws Exception {
         Map<String, Object> map = new HashMap<String, Object>();
 
-        final String key = new StringBuffer().append(stu_signup_no.getOrderId()).append(stu_signup_no.getStuId()).toString();
-        RLock lock = redis.getLock(key);
-        try {
-            Boolean cacheRes = lock.tryLock(30,10,TimeUnit.SECONDS);
-            if(cacheRes){
-                if(classAdminService.selectClass_panduan(stu_signup_no.getClassId())>0||discountActivityService.selectAct_panduan(stu_signup_no.getClassId())>0) {
                     if (stu_signup_noService.select_actualprice(stu_signup_no.getOrderId()) == stu_signup_noService.selectkey_pay(stu_signup_no.getOrderId())) {
                         stu_signup_noService.delete(stu_signup_no.getOrderId());
                         StuInfo stuInfo = new StuInfo();
@@ -154,32 +184,27 @@ public class Stu_signup_noController {
                         stuInfo.setOrderAmount(stu_signup_no.getOrderPrice());
                         stuInfo.setActualAmount(stu_signup_no.getActualPrice());
                         stuInfoService.addStu(stuInfo);
-                        ClassAdmin c = new ClassAdmin();
-                        c.setClassId(stuInfo.getStuClass());
-                        classAdminService.updateClasss(c);
-                        discountActivityService.updateact_num(stuInfo.getStuClass());
-                        StuAdmin stuAdmin=new StuAdmin();
+
+                        StuAdmin stuAdmin = new StuAdmin();
                         stuAdmin.setStuId(String.valueOf(session.getAttribute("sid")));
                         stuAdmin.setStusId(String.valueOf(stu_signup_no.getStuId()));
                         stuAdminMapper.update(stuAdmin);
 
 
+                        MoneyAdmin moneyAdmin =new MoneyAdmin();
+                        moneyAdmin.setActId(stu_signup_no.getStuId());
+                        moneyAdmin.setActName(stu_signup_no.getStuName());
+                        moneyAdmin.setActPay(String.valueOf(stu_signup_no.getActualPrice()));
+                        moneyAdmin.setActPrice(String.valueOf(stu_signup_no.getOrderPrice()));
+                        moneyAdminService.add(moneyAdmin);
+
                         map.put("code", 0);
                     } else {
                         map.put("code", 1);
                     }
-                }else {
-                    map.put("code", 1);
-                }
-            }
-
-        }finally {
-            lock.unlock();
-        }
-
 
 
         return map;
 //        return courseAdminService.selectCourse();
     }
-    }
+}

@@ -9,6 +9,8 @@ import java.util.List;
 @Component
 public interface StuAdminMapper {
     StuAdmin select(String stuId);
+    Integer delete(Integer stuId);
     Integer selectkey(String stuid);
     Integer update(StuAdmin stuAdmin);
+    List<StuAdmin> select1();
 }
